@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;700;800;900&display=swap");
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.container {
+  max-width: 1170px !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: auto;
+}
+
+section {
+  padding: 50px 0;
+}
+
+.sticky_header {
+  background: #fff;
+  width: 100%;
+  height: 70px;
+  line-height: 70px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  transition: 0.3s linear;
+}
+
+.carausel {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.inner {
+  white-space: nowrap;
+  transition: transform 0.3s;
+}
+
+.carausel-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background: #fff;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.carausel-img {
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.carausel-item-text {
+  font-size: 0.8rem;
+  margin: 40px 0 40px 0;
+  padding: 10px;
+  white-space: normal;
+}
+
+.carausel-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 10px;
+  gap: 12px;
+}
+
+.arrows-btn {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #fff;
+  border-radius: 50%;
+}
+
+#Cover {
+  background: linear-gradient(
+      to right top,
+      rgba(1, 92, 189, 0.699),
+      rgb(0, 94, 255)
+    ),
+    url("./assets/images/cover.jpg");
+  width: 100%;
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#line {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer
+}
+
+#line::after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background:#005eff;
+  transition: width linear 0.3s;
+}
+
+#line:hover::after {
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .menu {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    z-index: 100;
+    display: none;
+  }
+
+  .menu ul {
+    float: right;
+    width: 20rem;
+    height: 100%;
+    background: #fff;
+    padding: 10px 16px;
+    box-shadow: -1px 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu ul li {
+    width: 100%;
+    height: 50px;
+  }
+
+  .show_menu {
+    display: block;
+  }
+
+  .carausel-item {
+    padding: 16px;
+    margin: 4px;
+    height: 140px;
+  }
+}
