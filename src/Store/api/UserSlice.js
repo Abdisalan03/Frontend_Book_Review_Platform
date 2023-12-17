@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import BASE_URL from "./BASE_URL";
+import Cookies from 'js-cookie';
 
 
 const getToken = () => {

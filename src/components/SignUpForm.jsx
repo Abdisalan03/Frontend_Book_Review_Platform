@@ -1,42 +1,107 @@
-import React from "react";
-function SignUpForm() {
-  return (
-    <div className="bg-blue-400 text-white rounded-2xl shadow-2xl  flex flex-col w-full  md:w-1/3 items-center max-w-4xl transition duration-1000 ease-in">
-      <h2 className="p-3 text-3xl font-bold text-white">Horiz</h2>
-      <div className="inline-block border-[1px] justify-center w-20 border-white border-solid"></div>
-      <h3 className="text-xl font-semibold text-white pt-2">Create Account!</h3>
+import { useEffect } from "react";
+import { useForm } from "@mantine/form";
+import { TextInput, NativeSelect, PasswordInput, Text } from "@mantine/core";
+import { Link, useNavigate } from "react-router-dom";
+import { useSignUpMutation } from "../Store/api/AuthSlice";
+import toast from "react-hot-toast";
+import { useUserInfo } from "../components/UserInfo";
 
-      {/* Inputs */}
-      <div className="flex flex-col items-center justify-center mt-2">
-        <input
-          type="password"
-          className="rounded-2xl px-2 py-1 w-4/5 md:w-full border-[1px] border-blue-400 m-1 focus:shadow-md focus:border-pink-400 focus:outline-none focus:ring-0"
-          placeholder="Name"
-        ></input>
-        <input
-          type="email"
-          className="rounded-2xl px-2 py-1 w-4/5 md:w-full border-[1px] border-blue-400 m-1 focus:shadow-md focus:border-pink-400 focus:outline-none focus:ring-0"
-          placeholder="Email"
-        ></input>
-        <input
-          type="password"
-          className="rounded-2xl px-2 py-1 w-4/5 md:w-full border-[1px] border-blue-400 m-1 focus:shadow-md focus:border-pink-400 focus:outline-none focus:ring-0"
-          placeholder="Password"
-        ></input>
-        <input
-          type="password"
-          className="rounded-2xl px-2 py-1 w-4/5 md:w-full border-[1px] border-blue-400 m-1 focus:shadow-md focus:border-pink-400 focus:outline-none focus:ring-0"
-          placeholder="Avatar URL"
-        ></input>
-        <button className="rounded-2xl m-4 text-blue-400 bg-white w-3/5 px-4 py-2 shadow-md hover:text-white hover:bg-blue-400 transition duration-200 ease-in">
+function SignUpForm() {
+  const { userInfo } = useUserInfo();
+  const [signUp] = useSignUpMutation();
+  const navigate = useNavigate();
+
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      role: "",
+      password: "",
+    },
+
+    validate: {
+      name: (value) => !value.trim() && "Invalid name",
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email address"),
+      role: (value) =>
+        value === "" && "Select Your Role" || value === "Select Your Role" && "Please select your role",
+      password: (value) => !value.trim() && "Invalid Password",
+    },
+  });
+
+  const handleSubmit = async () => {
+    const { hasErrors } = form.validate();
+
+    if (!hasErrors) {
+      try {
+        const result = await signUp(form.values).unwrap();
+        console.log(result);
+        toast.success(result.message);
+        navigate("/login");
+      } catch (error) {
+        if (error.data) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("An error occurred during sign up");
+        }
+        console.log("error signup:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (userInfo === true) {
+      navigate("/SignUp");
+    }
+  }, [userInfo]);
+
+  return (
+    <div className="w-full md:w-2/4 xl:w-1/3 p-6 sm:p-8 rounded-lg flex flex-col shadow-[0px_0px_6px_rgb(0,0,0,0.1)]">
+      <h2 className="text-3xl font-medium text-center">Sign Up</h2>
+      <form onSubmit={handleSubmit}>
+        <TextInput
+          withAsterisk
+          label="Name"
+          mt="md"
+          size="md"
+          placeholder="Enter your name"
+          {...form.getInputProps("name")}
+        />
+        <TextInput
+          withAsterisk
+          mt="md"
+          size="md"
+          label="Email"
+          placeholder="Enter your email"
+          {...form.getInputProps("email")}
+        />
+
+        <NativeSelect
+          data={["Select Your Role", "admin", "user"]}
+          withAsterisk
+          label="Role"
+          mt="md"
+          size="md"
+          {...form.getInputProps("role")}
+        />
+
+        <PasswordInput
+          withAsterisk
+          label="Password"
+          placeholder="Your password"
+          mt="md"
+          size="md"
+          {...form.getInputProps("password")}
+        />
+        <button className="mt-6 w-full bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-4 py-3 text-sm flex items-center justify-center rounded-xl text-white duration-100 ">
           Sign Up
         </button>
-      </div>
-      <div className="inline-block border-[1px] justify-center w-20 border-white border-solid"></div>
-      <p className="text-white mt-4 text-sm">Already have an account?</p>
-      <p className="text-white mb-4 text-sm font-medium cursor-pointer">
-        Sign In to your Account?
-      </p>
+      </form>
+      <Text ta="center" mt="md">
+        I have an account?{" "}
+        <Link to="/Login" className="text-primaryColor">
+          login
+        </Link>
+      </Text>
     </div>
   );
 }

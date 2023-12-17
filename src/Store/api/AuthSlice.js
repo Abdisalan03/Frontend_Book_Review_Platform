@@ -7,11 +7,11 @@ const setToken = (token) => {
 }
 
 export const AuthSlice = createApi({
-    reducerPath: "user",
+    reducerPath: "userApi",
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL
     }),
-    tagTypes: ["user"],
+    tagTypes: ["userApi"],
     endpoints: (builder) => ({
         // sign up
         signUp: builder.mutation({
@@ -20,7 +20,7 @@ export const AuthSlice = createApi({
                 method: "POST",
                 body: newUser
             }),
-            invalidatesTags: ["user"]
+            invalidatesTags: ["userApi"]
         }),
         // login
         login: builder.mutation({
@@ -29,7 +29,7 @@ export const AuthSlice = createApi({
                 method: "POST",
                 body: user
             }),
-            invalidatesTags: ["user"],
+            invalidatesTags: ["userApi"],
 
             onQueryStarted: async (arg, {queryFulfilled }) => {
                try {
