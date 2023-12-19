@@ -1,13 +1,29 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import { Link, useLocation } from "react-router-dom";
+import { FiMenu } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
+import { FiChevronDown } from "react-icons/fi";
+import { BsHouses, BsHouseAdd } from "react-icons/bs";
+import { IoLogOutOutline } from "react-icons/io5";
+import { MdOutlineSendTimeExtension } from "react-icons/md";
+import { LiaUserEditSolid, LiaUserAltSolid } from "react-icons/lia";
+import { IoTrash } from "react-icons/io5";
+import { useGetUserQuery } from "../Store/api/UserSlice";
+import { Text, Avatar, Group, Menu } from "@mantine/core";
+import { useUserInfo } from "../components/UserInfo";
+import { RiHistoryFill } from "react-icons/ri";
 
 function Header() {
+  const { userInfo, handleLogout, handleDeleteUser } = useUserInfo();
+  const { data: user = {} } = useGetUserQuery();
+
   const headerRef = useRef(null);
   const menuRef = useRef(null);
-  const location = useLocation();
+  const [menu, setMenu] = useState(false);
 
-  const stickyHeaderFuc = () => {
+  // header sticky function
+  const stickyHeader = () => {
     window.addEventListener("scroll", () => {
       if (
         document.body.scrollTop > 70 ||
@@ -21,93 +37,153 @@ function Header() {
   };
 
   useEffect(() => {
-    stickyHeaderFuc();
+    stickyHeader();
 
-    return window.removeEventListener("scroll", stickyHeaderFuc);
+    return window.removeEventListener("scroll", stickyHeader);
   }, []);
-
-  const toggleMenu = () => menuRef.current.classList.toggle("show_menu");
 
   return (
     <header
       ref={headerRef}
-      className="w-full h-[70px] leading-[70px] flex items-center"
+      className=" w-full h-[70px] leading-[70px] flex items-center"
     >
       <div className="container">
-        <div className="flex items-center justify-between">
-          {/* ===== logo start ====== */}
+        <div className="flex justify-between items-center">
+          {/* logo */}
           <Link to="/">
-            <figure className="w-[8rem]">
-              <img src={logo} alt="somali school" />
+            <figure className="w-[14rem]">
+              <img src={logo} alt="" className="w-full" />
             </figure>
           </Link>
-          {/* ===== logo end ====== */}
-          {/* ===== menu links start ====== */}
-          <div className="menu" ref={menuRef} onClick={toggleMenu}>
-            <ul className="flex flex-col md:flex-row gap-0 md:gap-8">
-              <li>
-                <Link
-                  to="/"
-                  className={`text-[#222] font-medium hover:text-primaryColor ${
-                    location.pathname === "/"
-                      ? "text-primaryColor"
-                      : "text-txtColor"
-                  }`}
+          {/* nav links */}
+          <div
+            ref={menuRef}
+            className={`menu ${menu === true ? "show_menu" : ""}`}
+          >
+            <ul className="flex flex-col md:flex-row md:items-center gap-0 md:gap-8 font-medium">
+              <Link to="/" onClick={() => setMenu(!menu)}>
+                <li>Home</li>
+              </Link>
+              <Link to="/Books" onClick={() => setMenu(!menu)}>
+                <li>Books</li>
+              </Link>
+
+              {userInfo === null || userInfo === false ? (
+                <>
+                  <Link
+                    to="/login"
+                    className="pb-6 md:pb-0"
+                    onClick={() => setMenu(!menu)}
+                  >
+                    <li>Login</li>
+                  </Link>
+                  <Link to="/sign-up" onClick={() => setMenu(!menu)}>
+                    <button className="bg-primaryColor px-8 py-2 h-[44px] flex items-center justify-center rounded-3xl text-white duration-100 hover:scale-105">
+                      Sign Up
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <Menu
+                  width={260}
+                  position="bottom-end"
+                  transitionProps={{ transition: "pop-top-right" }}
+                  withinPortal
                 >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/Books"
-                  className={`text-[#222] font-medium hover:text-primaryColor ${
-                    location.pathname === "/About-us"
-                      ? "text-primaryColor"
-                      : "text-txtColor"
-                  }`}
-                >
-                  Books
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/Login"
-                  className={`text-[#222] font-medium hover:text-primaryColor ${
-                    location.pathname === "/Contact-us"
-                      ? "text-primaryColor"
-                      : "text-txtColor"
-                  }`}
-                >
-                  Login
-                </Link>
-              </li>
+                  <Menu.Target>
+                    <Group gap={7} className="mt-4 md:mt-0 cursor-pointer">
+                      <Avatar
+                        src={user.avatar}
+                        alt={user.name}
+                        radius="xl"
+                        size={40}
+                      />
+                      <Text fw={500} size="sm" lh={1} mr={3}>
+                        {user.name}
+                      </Text>
+                      <FiChevronDown />
+                    </Group>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {user.role === "admin" && (
+                      <>
+                        <Link to="/AddBook" onClick={() => setMenu(!menu)}>
+                          <Menu.Item leftSection={<BsHouseAdd />}>
+                            Add Book
+                          </Menu.Item>
+                        </Link>
+                        <Link to="/Books" onClick={() => setMenu(!menu)}>
+                          <Menu.Item leftSection={<BsHouses />}>
+                            Your Books
+                          </Menu.Item>
+                        </Link>
+                      </>
+                    )}
+                    {user.role === "user" && (
+                      <>
+                        {/* <Link to="/user_activity" onClick={() => setMenu(!menu)}>
+                        <Menu.Item leftSection={<LiaUserAltSoli />}>
+                          User activity
+                        </Menu.Item>
+                        </Link> */}
+                        <Link to="/Books" onClick={() => setMenu(!menu)}>
+                          <Menu.Item leftSection={<BsHouses />}>
+                            Your Books
+                          </Menu.Item>
+                        </Link>
+                      </>
+                    )}
+
+                    <Menu.Label>Settings</Menu.Label>
+                    <Link
+                      to={
+                        user && user.name
+                          ? `/Profile/${user.name
+                              .toLowerCase()
+                              .split(" ")
+                              .join("-")}`
+                          : "/Profile"
+                      }
+                      onClick={() => setMenu(!menu)}
+                    >
+                      <Menu.Item leftSection={<LiaUserAltSolid />}>
+                        Profile
+                      </Menu.Item>
+                    </Link>
+                    <Link to="/Editprofile" onClick={() => setMenu(!menu)}>
+                      <Menu.Item leftSection={<LiaUserEditSolid />}>
+                        Edit Profile
+                      </Menu.Item>
+                    </Link>
+                    <Menu.Item
+                      leftSection={<IoLogOutOutline />}
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Menu.Item>
+
+                    <Menu.Divider />
+
+                    <Menu.Label>Danger zone</Menu.Label>
+                    <Menu.Item
+                      color="red"
+                      onClick={handleDeleteUser}
+                      leftSection={<IoTrash />}
+                    >
+                      Delete account
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              )}
             </ul>
           </div>
-          {/* ===== menu links end ====== */}
-          {/* ===== menu right start ====== */}
-          <div className="flex items-center gap-4">
-            {/* button right */}
-            <Link k to="/SignUp" onClick={() => setMenu(!menu)}>
-              <span
-                className="hidden sm:flex h-[40px] items-center justify-center border border-solid border-primaryColor py-2 px-4 
-              rounded-[8px] cursor-pointer bg-primaryColor text-white ease-in duration-300"
-              >
-                <i class="ri-mail-send-line"></i>
-                <span className="pl-2">Sign Up</span>
-              </span>
-            </Link>
-
-            {/* Menu toggle */}
-            <span
-              onClick={toggleMenu}
-              className="flex md:hidden items-center justify-center bg-primaryColor w-[40px] h-[40px] leading-[40px] text-center text-white 
-            text-2xl rounded-[5px] cursor-pointer"
-            >
-              {/* <i class="ri-menu-4-fill"></i> */}
-              <i class="ri-menu-3-fill"></i>
-            </span>
+          {/* menu toggle */}
+          <div
+            onClick={() => setMenu(!menu)}
+            className="flex md:hidden bg-primaryColor w-[40px] h-[40px] items-center justify-center cursor-pointer text-white text-2xl rounded duration-100 hover:scale-105"
+          >
+            {!menu ? <FiMenu /> : <IoClose />}
           </div>
-          {/* ===== menu right end ====== */}
         </div>
       </div>
     </header>

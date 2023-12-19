@@ -91,9 +91,9 @@ export const BooksSlice = createApi({
 
 export const {
   useGetBookQuery,
-  useAddPropertyMutation,
-  useEditPropertyMutation,
-  useDeletePropertyMutation,
+  useAddBookMutation,
+  useEditBookMutation,
+  useDeleteBookMutation,
   useContactOwnerMutation,
   useContactRenterMutation,
   useUpdateImagesMutation

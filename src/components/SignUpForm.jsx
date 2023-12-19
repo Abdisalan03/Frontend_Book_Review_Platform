@@ -32,6 +32,7 @@ function SignUpForm() {
     const { hasErrors } = form.validate();
 
     if (!hasErrors) {
+      console.log("value:", form.values)
       try {
         const result = await signUp(form.values).unwrap();
         console.log(result);
@@ -57,7 +58,10 @@ function SignUpForm() {
   return (
     <div className="w-full md:w-2/4 xl:w-1/3 p-6 sm:p-8 rounded-lg flex flex-col shadow-[0px_0px_6px_rgb(0,0,0,0.1)]">
       <h2 className="text-3xl font-medium text-center">Sign Up</h2>
-      <form onSubmit={handleSubmit}>
+     <form onSubmit={(e) => {
+        e.preventDefault()
+        handleSubmit()
+      }}>
         <TextInput
           withAsterisk
           label="Name"
