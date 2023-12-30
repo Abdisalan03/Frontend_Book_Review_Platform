@@ -1,247 +1,125 @@
-import React from "react";
-import bookone from "../assets/bookone.jpg"
+import React, { useState, useEffect } from "react";
+// import Loading from '../../assets/images/spinner.jpg'
+import { FaTrash, FaEdit } from "react-icons/fa";
+import {
+  useDeleteBookMutation,
+  useGetBookQuery,
+} from "../Store/api/BooksSlice";
+import { Link } from "react-router-dom";
+import { useGetUserQuery } from "../store/api/UserSlice";
+// import notFound from "../../assets/images/NotFound.png";
+import { ToastContainer, toast } from "react-toastify";
+import Search from "../components/Search";
 
-const Card = () => {
+function Card() {
+  const [search, setSearch] = useState("");
+  const [filteredItems, setFilteredItems] = useState([]);
+
+  const { data: user = [] } = useGetUserQuery();
+
+  const { data: books = [], isLoading } = useGetBookQuery();
+
+  const [delateItem] = useDeleteBookMutation();
+
+  const Mybook = books.filter((book) => book.landlord_id === user.id);
+  // console.log(Mybook);
+
+  const handleDelate = (book_id) => {
+    if (confirm("Are you sure ?")) {
+      delateItem(book_id).then(() => {
+        toast.success("book deleted successfully");
+      });
+    }
+  };
+
+  useEffect(() => {
+    setFilteredItems(
+      Mybook.filter((book) =>
+        book.title.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, books]);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
-    <>
-      <div className="text-center  flex-col">
-        <h2
-          data-aos="fade-right"
-          data-aos-duration="1500"
-          className="font-bold text-black text-[2.2rem]"
-        >
-          Latest <span className="text-primaryColor">Books</span>
-        </h2>
-      </div>
-      <div className="flex justify-center  ">
-        <div class="w-full max-w-sm  shadow-3xl dark:bg-white dark:border-gray-700 m-4">
-          <a href="#">
-            <img
-              class="p-8 rounded-t-lg w-full max-h-[350px]"
-              src={bookone}
-              alt="product image"
-            />
-          </a>
-          <div class="px-5 pb-5">
-            <h1 class="text-xl font-medium text-gray-900 dark:text-black">book one</h1>
-            <h6 class="text- font-small text-gray-900 dark:text-black">
-              Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport
-            </h6>
-            <div class="flex items-center mt-2.5 mb-5">
-              <div class="flex items-center space-x-1 rtl:space-x-reverse">
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-gray-200 dark:text-gray-600"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-              </div>
-              <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
-                5.0
-              </span>
-            </div>
-            <div class="flex items-center justify-between">
-            <span class="text-3xl font-bold text-gray-900 dark:text-black">
-                {/* $599 */}
-              </span>
-            
-            </div>
-          </div>
-        </div>
+    <div className="mt-5 bg-white p-6 w-full flex flex-col shadow rounded">
+      {/* title */}
+      <ToastContainer />
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-2xl">My Books</h3>
 
-        <div class="w-full max-w-sm bg-white  shadow dark:bg-gray-100 dark:border-gray-700 m-4">
-          <a href="#">
-            <img
-              class="p-8 rounded-t-lg w-full max-h-[350px]"
-              src={bookone}
-              alt="product image"
-            />
-          </a>
-          <div class="px-5 pb-5">
-            <h1 class="text-xl font-medium text-gray-900 dark:text-black">book one</h1>
-            <h6 class="text- font-small text-gray-900 dark:text-black">
-              Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport
-            </h6>
-            <div class="flex items-center mt-2.5 mb-5">
-              <div class="flex items-center space-x-1 rtl:space-x-reverse">
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-gray-200 dark:text-gray-600"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-              </div>
-              <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
-                5.0
-              </span>
-            </div>
-            <div class="flex items-center justify-between">
-            <span class="text-3xl font-bold text-gray-900 dark:text-black">
-                {/* $599 */}
-              </span>
-              
+        <Search inputValue={search} onInputChange={handleSearch} />
+      </div>
+      {/* Books */}
+      <div className="mt-4 flex justify-center flex-wrap gap-5 p-4 pb-5">
+        {isLoading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="text-3xl font-bold flex items-center justify-center uppercase">
+              <span className="animate-spin h-8 w-8 mr-3 rounded-full border-2 border-[#00befe] border-t-gray-100 "></span>
+              loading...
             </div>
           </div>
-        </div>
-        <div class="w-full max-w-sm bg-white shadow dark:bg-gray-100 dark:border-gray-700 m-4">
-          <a href="#">
-            <img
-              class="p-8 rounded-t-lg w-full max-h-[350px]"
-              src={bookone}
-              alt="product image"
-            />
-          </a>
-          <div class="px-5 pb-5">
-            <h1 class="text-xl font-medium text-gray-900 dark:text-black">book one</h1>
-            <h6 class="text- font-small text-gray-900 dark:text-black">
-              Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport
-            </h6>
-            <div class="flex items-center mt-2.5 mb-5">
-              <div class="flex items-center space-x-1 rtl:space-x-reverse">
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-yellow-300"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
-                <svg
-                  class="w-4 h-4 text-gray-200 dark:text-gray-600"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 22 20"
-                >
-                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                </svg>
+        ) : (
+          <>
+            {Mybook.length === 0 ? (
+              <div className="flex flex-col w-full !h-[60vh] items-center justify-center">
+                {/* <img
+                  src={notFound}
+                  alt=""
+                  className="w-[20rem] h-60 md:w-[28rem] md:h-80"
+                /> */}
+                <h1 className="font-medium text-xl text-gray-400">
+                  Books is Empty
+                </h1>
               </div>
-              <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">
-                5.0
-              </span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-3xl font-bold text-gray-900 dark:text-black">
-                {/* $599 */}
-              </span>
-              <a
-                href="#"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600"
-              >
-               Review
-              </a>
-            </div>
-          </div>
-        </div>
-        </div>
-    </>
+            ) : (
+              <>
+                {filteredItems.map((book) => (
+                  <div
+                    key={book._id}
+                    className="flex flex-col gap-6  overflow-hidden w-[350px] bg-white shadow-lg border-2 hover:border-[#00befe] p-4 rounded-xl hover:scale-[0.98] transition-all"
+                  >
+                  <Link to= {`/Books/${book._id}`}>  <img
+                      src={book.image}
+                      alt=""
+                      className="w-full h-[180px]  rounded-xl bg-auto bg-no-repeat bg-center"
+                    /></Link>
+                    <div className="flex flex-col gap-4 md:gap-4 w-full">
+                      <div className="flex flex-col gap-2">
+                        <h3 className=" text-2xl">
+                          {" "}
+                          {book.title.slice(0, 20) +
+                            [book.title.length >= 20 ? "..." : ""]}
+                        </h3>
+                        <span className="text-[#8f84f1]">
+                          Des: {book.description}
+                        </span>
+                        <span className="text-[#222]">auth: {book.author}</span>
+                        <span className="text-[#222]">$ {book.price}</span>
+                        <span className="text-[#222]">year: {book.year}</span>
+                      </div>
+                      <div className="mt-3 pb-2 flex items-center justify-between">
+                        <FaTrash
+                          onClick={() => handleDelate(book._id)}
+                          className="text-[#FF6746] text-xl cursor-pointer"
+                        />
+                        <Link to={`/Admin/books/Edit/${book._id}`}>
+                          <FaEdit className="text-xl text-[#00befe] cursor-pointer" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
-};
+}
 
 export default Card;

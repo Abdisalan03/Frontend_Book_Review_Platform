@@ -1,7 +1,7 @@
 import  { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { useDeleteUserMutation } from "../Store/api/UserSlice";
+import { useDeleteUserMutation } from "../store/api/UserSlice";
 import { useNavigate } from "react-router-dom";
 
 const UserInfoContext = createContext(null);

@@ -1,276 +1,174 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Button,
-  NativeSelect,
-  NumberInput,
-  Select,
-  TextInput,
-  Textarea,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { AiOutlineCloudUpload } from "react-icons/ai";
-import { useAddBookMutation } from "../Store/api/BooksSlice";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { IoClose } from "react-icons/io5";
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+import { useNavigate } from 'react-router-dom/dist'
+import  toast from 'react-hot-toast'
+import { useAddBookMutation } from '../store/api/BooksSlice'
 
 function Addbook() {
-  const [step, setStep] = useState(1);
-  const [errorImg, setErrorImg] = useState(false);
-  const navigate = useNavigate();
-  const [images, setImages] = useState([]);
 
-  const [Addbook] = useAddBookMutation();
+  const navigate = useNavigate()
 
-  const form = useForm({
-    initialValues: {
-      title: "",
-      auther: "",
-      description: "",
-      price: 0,
-      year: 0,
-    },
-    validate: (values) => {
-      const errors = {};
+  const [addItem, {error}] = useAddBookMutation()
+  console.log("add:", error)
 
-      if (step === 3) {
-        if (values.title.length < 3) {
-          errors.title = "Must have at least 3 characters";
-        }
-        if (values.auther === "Select book auther" || !values.type.trim()) {
-          errors.auther = "Please Select book auther";
-        }
+  const initialValues = {
+    title: '',
+    year: '',
+    description: '',
+    author: '',
+   price: "",
+    image: '',
+  };
 
-        if (values.description.length < 3) {
-          errors.description = "Invalid description for book";
-        }
-        if (values.price > 50) {
-          errors.price = "Price is required";
-        }
-        if (values.year < 2000) {
-          errors.year = "Year must be greater than or equal to 2000";
-        }
-      }
-
-      return errors;
-    },
+  const validationSchema = Yup.object({
+    title: Yup.string().required('Title is required'),
+    year: Yup.number().required('year is required'),
+    description: Yup.string().required('Description is required'),
+    author: Yup.string().required('auther is required'),
+    price: Yup.number().required('Price is required'),
+    image: Yup.string().required('image is required'),
   });
 
-  const handleNextStep = (e) => {
-    e.preventDefault();
-    const { hasErrors } = form.validate();
-    if (step === 2) {
-      if (images.length === 0) {
-        setErrorImg(true);
-        setStep(2);
-        return;
-      }
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await addItem({
+        title: values.title,
+        description: values.description,
+        author: values.author,
+        year: values.year,
+        price: values.price,
+        image: values.image,
+      });
+      toast.success("book created successfully");
+      navigate('/Books');
+    } catch (error) {
+      // Handle any error that occurs during the API request
+      // console.error(error);
     }
 
-    if (!hasErrors) {
-      setStep((current) => current + 1);
-    }
-  };
+    // console.log(values);
+    resetForm()
+  }
 
-  const handlePreviousStep = () => {
-    setStep(step - 1);
-  };
-
-  const cloudinaryRef = useRef();
-  const widgetRef = useRef();
-
-  const setupCloudinaryWidget = () => {
-    if (window.cloudinary) {
-      cloudinaryRef.current = window.cloudinary;
-      widgetRef.current = cloudinaryRef.current.createUploadWidget(
-        {
-          cloudName: import.meta.env.VITE_APP_CLOUD_NAME,
-          uploadPreset: import.meta.env.VITE_APP_UPLOAD_PRESET,
-          maxFiles: 30,
-        },
-        (err, result) => {
-          if (err) {
-            console.error(err);
-          } else if (result.event === "success") {
-            setImages((prevImages) => [...prevImages, result.info.secure_url]);
-          }
-        }
-      );
-    }
-  };
-
-  useEffect(() => {
-    setupCloudinaryWidget();
-  }, []);
-
-  const handleImageUpload = () => {
-    widgetRef.current?.open();
-  };
-
-  const handleDeleteImg = (index) => {
-    if (index !== -1) {
-      const newImages = [...images];
-      newImages.splice(index, 1);
-      setImages(newImages);
-    }
-  };
-
-  const handleSubmit = () => {
-    const { hasErrors } = form.validate();
-    if (!hasErrors) {
-        Addbook({ ...form.values, images })
-        .unwrap()
-        .then((result) => {
-          toast.success(result.message);
-          navigate("/");
-        })
-        .catch((error) => {
-          toast.error(error.data.message);
-        });
-    }
-  };
 
   return (
-    <div className="w-full md:w-2/4 xl:w-1/2 p-6 sm:p-8 rounded-lg flex flex-col shadow-[0px_0px_6px_rgb(0,0,0,0.1)]">
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (step === 3) {
-            handleSubmit();
-          }
-        }}
-        className="w-full flex flex-col gap-3"
-      >
-        {step === 1 && <></>}
+    <div className='mt-5 bg-white p-8 w-full flex flex-col shadow rounded '>
+      
+      {/* content */}
 
-        {step === 2 && (
-          <>
-            {images.length <= 0 || images.length >= 30 ? (
-              <h2 className="text-2xl md:text-3xl font-medium text-center">
-                Upload Images
-              </h2>
-            ) : (
-              <div
-                className="cursor-pointer flex items-center justify-center gap-2 text-xl font-medium text-center text-primaryColor"
-                onClick={handleImageUpload}
-              >
-                <AiOutlineCloudUpload />
-                Upload More
-              </div>
-            )}
+      <div className="mx-auto w-full rounded-lg bg-white p-10 border shadow-xl md:w-3/4 lg:w-1/2 mb-12">
 
-            <div className="w-full h-full flex items-center justify-center flex-col mt-4 gap-6 overflow-hidden">
-              {images.length === 0 ? (
-                <div
-                  className={`w-full h-[260px] border-2 border-dashed ${
-                    errorImg
-                      ? "border-red-500 text-red-500"
-                      : "border-primaryColor text-primaryColor"
-                  } flex flex-col items-center justify-center cursor-pointer`}
-                  onClick={handleImageUpload}
-                >
-                  <AiOutlineCloudUpload size={50} />
-                  <span>Upload Image</span>
-                </div>
-              ) : (
-                <div className="w-full h-full flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                  {images.map((img, i) => (
-                    <div
-                      key={i}
-                      className="w-[118px] sm:w-[140px] h-[80px] rounded-lg cursor-pointer relative group overflow-hidden"
-                      onClick={() => handleDeleteImg(i)}
-                    >
-                      <img
-                        src={img}
-                        alt=""
-                        className="w-full h-full bg-center bg-cover bg-no-repeat object-cover"
-                      />
-                      <div className="group-hover:flex hidden absolute top-0 left-0 bg-[rgba(0,0,0,0.4)] w-full h-full items-center justify-center text-white text-xl">
-                        <IoClose />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          <Form>
+            <div className="mb-5">
             </div>
-          </>
-        )}
-
-        {step === 3 && (
-          <>
-            <h2 className="text-2xl md:text-3xl font-medium text-center">
-              Book Info
-            </h2>
-            <TextInput
-              label="Title"
-              withAsterisk
-              placeholder="Type your title"
-              {...form.getInputProps("title")}
-            />
-            <Textarea
-              withAsterisk
-              label="Description"
-              placeholder="Description"
-              {...form.getInputProps("description")}
-            />
-            <Select
-              withAsterisk
-              label="auther"
-              placeholder="auther"
-              clearable
-              searchable
-              data={auther}
-              {...form.getInputProps("auther")}
-            />
-            <NumberInput
-             withAsterisk
-             label="Price"
-             placeholder="$339.94"
-             min={0}
-              {...form.getInputProps("price")}
-            />
-            <div className="w-full flex gap-2">
-              <NumberInput
-                label="Year"
-                withAsterisk
-                placeholder="Year"
-                min={0}
-                {...form.getInputProps("year")}
+            <div className="mb-8">
+              <Field
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Title"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 
+                 outline-none shadow text-[20px]"
+              />
+              <ErrorMessage
+                name="title"
+                component="div"
+                className="text-red-400"
               />
             </div>
-          </>
-        )}
 
-        <div className="flex flex-col sm:flex-row justify-between">
-          {step > 1 && (
-            <button
-              type="button"
-              onClick={handlePreviousStep}
-              className="mt-3 bg-gray-400 bg-opacity-90 hover:bg-opacity-100 px-6 py-2 text-sm flex items-center justify-center rounded text-white duration-100 "
-            >
-              Previous
+            <div className="mb-5">
+              <Field
+                as="textarea"
+                id="description"
+                name="description"
+                placeholder="Description"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 shadow
+                outline-none text-[20px]"
+              />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="text-red-400"
+              />
+            </div>
+
+            <div className="mb-5">
+              <Field
+                type="text"
+                id="author"
+                name="author"
+                placeholder="author"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 
+                 outline-none shadow text-[20px]"
+              />
+              <ErrorMessage
+                name="author"
+                component="div"
+                className="text-red-400"
+              />
+            </div>
+
+            <div className="mb-5">
+              <Field
+                type="number"
+                id="price"
+                name="price"
+                placeholder="Price"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 shadow
+                outline-none text-[20px]"
+              />
+              <ErrorMessage
+                name="Price"
+                component="div"
+                className="text-red-400"
+              />
+            </div>
+
+            <div className="mb-5">
+              <Field
+                type="number"
+                id="year"
+                name="year"
+                placeholder="year"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 shadow  outline-none text-[20px]"
+              />
+              <ErrorMessage
+                name="year"
+                component="div"
+                className="text-red-400"
+              />
+            </div>
+            <div className="mb-5">
+              <Field
+                type="text"
+                id="image"
+                name="image"
+                placeholder="url image"
+                className="w-full bg-[#fdfdfd] rounded border border-gray-300 p-3 shadow  outline-none text-[20px]"
+              />
+              <ErrorMessage
+                name="image"
+                component="div"
+                className="text-red-400"
+              />
+            </div>
+
+            <button type="submit" className="bg-primaryColor p-3 px-6 rounded-lg font-medium text-sm text-white cursor-pointer transition-all hover:bg-primaryColor   w-full">
+              Add Book
             </button>
-          )}
-          {step === 3 ? (
-            <button
-              type="submit"
-              className="mt-3 bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-6 py-2 text-sm flex items-center justify-center rounded text-white duration-100 "
-            >
-              AddBook
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={(e) => handleNextStep(e)}
-              className="mt-3 bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-6 py-2 text-sm flex items-center justify-center rounded text-white duration-100 "
-            >
-              Next Step
-            </button>
-          )}
-        </div>
-      </form>
+
+          </Form>
+        </Formik>
+      </div>
+
     </div>
-  );
+  )
 }
 
-export default Addbook;
+export default Addbook

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink  } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FiMenu } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
@@ -24,7 +24,7 @@ function Header() {
 
   // header sticky function
   const stickyHeader = () => {
-    window.addEventListener("scroll", () => {
+    if (headerRef.current) {
       if (
         document.body.scrollTop > 70 ||
         document.documentElement.scrollTop > 70
@@ -33,25 +33,30 @@ function Header() {
       } else {
         headerRef.current.classList.remove("sticky_header");
       }
-    });
+    }
   };
 
   useEffect(() => {
     stickyHeader();
 
-    return window.removeEventListener("scroll", stickyHeader);
+    // Cleanup function
+    return () => {
+      if (headerRef.current) {
+        window.removeEventListener("scroll", stickyHeader);
+      }
+    };
   }, []);
 
   return (
     <header
       ref={headerRef}
-      className=" w-full h-[70px] leading-[70px] flex items-center"
+      className="w-full h-[70px] leading-[70px] flex items-center"
     >
       <div className="container">
         <div className="flex justify-between items-center">
           {/* logo */}
           <Link to="/">
-            <figure className="w-[14rem]">
+            <figure className="w-[8rem]">
               <img src={logo} alt="" className="w-full" />
             </figure>
           </Link>
@@ -61,10 +66,19 @@ function Header() {
             className={`menu ${menu === true ? "show_menu" : ""}`}
           >
             <ul className="flex flex-col md:flex-row md:items-center gap-0 md:gap-8 font-medium">
-              <Link to="/" onClick={() => setMenu(!menu)}>
+              <NavLink
+                to="/"
+                onClick={() => setMenu(!menu)}
+                activeClassName="text-primaryColor"
+                className="text-[20px] hover:text-primaryColor transition-colors text-primaryColor"
+              >
                 <li>Home</li>
-              </Link>
-              <Link to="/Books" onClick={() => setMenu(!menu)}>
+              </NavLink>
+              <Link
+                to="/Books"
+                onClick={() => setMenu(!menu)}
+                className="text-[20px] hover:text-primaryColor transition-colors r"
+              >
                 <li>Books</li>
               </Link>
 
@@ -72,12 +86,12 @@ function Header() {
                 <>
                   <Link
                     to="/login"
-                    className="pb-6 md:pb-0"
+                    className="pb-6 md:pb-0 text-[20px] hover:text-primaryColor transition-colors"
                     onClick={() => setMenu(!menu)}
                   >
                     <li>Login</li>
                   </Link>
-                  <Link to="/sign-up" onClick={() => setMenu(!menu)}>
+                  <Link to="/SignUp" onClick={() => setMenu(!menu)}>
                     <button className="bg-primaryColor px-8 py-2 h-[44px] flex items-center justify-center rounded-3xl text-white duration-100 hover:scale-105">
                       Sign Up
                     </button>
@@ -121,11 +135,16 @@ function Header() {
                     )}
                     {user.role === "user" && (
                       <>
-                        {/* <Link to="/user_activity" onClick={() => setMenu(!menu)}>
-                        <Menu.Item leftSection={<LiaUserAltSoli />}>
-                          User activity
-                        </Menu.Item>
-                        </Link> */}
+                        <Link
+                          to="/user_activity"
+                          onClick={() => setMenu(!menu)}
+                        >
+                          <Menu.Item
+                            leftSection={<MdOutlineSendTimeExtension />}
+                          >
+                            User activity
+                          </Menu.Item>
+                        </Link>
                         <Link to="/Books" onClick={() => setMenu(!menu)}>
                           <Menu.Item leftSection={<BsHouses />}>
                             Your Books
@@ -138,11 +157,11 @@ function Header() {
                     <Link
                       to={
                         user && user.name
-                          ? `/Profile/${user.name
+                          ? `/profile/${user.name
                               .toLowerCase()
                               .split(" ")
                               .join("-")}`
-                          : "/Profile"
+                          : "/profile"
                       }
                       onClick={() => setMenu(!menu)}
                     >
@@ -150,7 +169,7 @@ function Header() {
                         Profile
                       </Menu.Item>
                     </Link>
-                    <Link to="/Editprofile" onClick={() => setMenu(!menu)}>
+                    <Link to="/profile" onClick={() => setMenu(!menu)}>
                       <Menu.Item leftSection={<LiaUserEditSolid />}>
                         Edit Profile
                       </Menu.Item>

@@ -7,7 +7,7 @@ const getToken = () => {
 };
 
 export const BooksSlice = createApi({
-  reducerPath: "books",
+  reducerPath: "bookApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: (headers) => {
@@ -20,22 +20,22 @@ export const BooksSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ["books"],
+  tagTypes: ["bookApi"],
   endpoints: (builder) => ({
     // Get books
     getBook: builder.query({
       query: () => "books",
-      providesTags: ["books"],
+      providesTags: ["bookApi"],
     }),
 
     // Create books
     addBook: builder.mutation({
       query: (newBook) => ({
-        url: "books/create",
+        url: "/books",
         method: "POST",
         body: newBook,
       }),
-      invalidatesTags: ["books"],
+      invalidatesTags: ["bookApi"],
     }),
 
      // Update books images 
@@ -45,26 +45,26 @@ export const BooksSlice = createApi({
         method: "PUT",
         body: images,
       }),
-      invalidatesTags: ["books"],
+      invalidatesTags: ["bookApi"],
     }),
 
     // Update books
     editBook: builder.mutation({
       query: ({bookData, id }) => ({
-        url: `books/update/${id}`,
+        url: `books/${id}`,
         method: "PUT",
         body: bookData,
       }),
-      invalidatesTags: ["books"],
+      invalidatesTags: ["bookApi"],
     }),
 
     // Delete book
     deleteBook: builder.mutation({
       query: (id) => ({
-        url: `books/delete/${id}`,
+        url: `books/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["books"],
+      invalidatesTags: ["bookApi"],
     }),
 
     

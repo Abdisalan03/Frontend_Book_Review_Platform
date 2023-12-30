@@ -2,55 +2,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { TextInput, Avatar } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { HiCamera } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import {
-  useGetUserQuery, 
+  useGetUserQuery,
   useUpdateUserMutation
 } from "../Store/api/UserSlice";
 
 function EditProfileContent() {
-  const { data: user = [] } = useGetUserQuery();
+  const { data: user = {} } = useGetUserQuery();
+  console.log("user:", user);
   const [editUser] = useUpdateUserMutation();
   const navigate = useNavigate();
-
-  const [avatarUrl, setAvatarUrl] = useState(user.avatar);
-  const cloudinaryRef = useRef();
-  const widgetRef = useRef();
-
-  useEffect(() => {
-    cloudinaryRef.current = window.cloudinary;
-    widgetRef.current = cloudinaryRef.current.createUploadWidget(
-      {
-        cloudName: import.meta.env.VITE_APP_CLOUD_NAME,
-        uploadPreset: import.meta.env.VITE_APP_UPLOAD_PRESET,
-        maxFiles: 1,
-      },
-      (err, result) => {
-        if (result.event === "success") {
-          setAvatarUrl(result.info.secure_url);
-        }
-      }
-    );
-  }, []);
 
   const form = useForm({
     initialValues: {
       name: user.name,
       email: user.email,
-      avatar: user.avatar,
+      image: user.image
     },
 
     validate: {
       name: (value) => !value.trim() && "Invalid name",
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
-    },
+      image: (value) => {
+        // You can add custom validation for the image URL if needed
+        // For now, assuming any string is a valid URL
+        return /^(ftp|http|https):\/\/[^ "]+$/.test(value)
+          ? null
+          : "Invalid URL";
+      }
+    }
   });
-
-  useEffect(() => {
-    form.setFieldValue("avatar", avatarUrl);
-  }, [avatarUrl, form]);
 
   const handleSubmit = async () => {
     const { hasErrors } = form.validate();
@@ -79,20 +62,6 @@ function EditProfileContent() {
           handleSubmit();
         }}
       >
-        <div className="flex items-center justify-center mt-3">
-          <div
-            onClick={() => widgetRef.current?.open()}
-            className="group w-[120px] relative text-cursor-pointer"
-          >
-            {/* image avatar */}
-            <Avatar src={avatarUrl} size={120} radius={120} mx="auto" />
-            {/* hover upload image */}
-            <div className="duration-300 group-hover:flex hidden cursor-pointer bg-black bg-opacity-30 absolute top-0 left-0 w-full h-full rounded-full items-center justify-center text-3xl text-white">
-              <HiCamera />
-            </div>
-          </div>
-        </div>
-
         <TextInput
           withAsterisk
           label="Name"
@@ -108,6 +77,13 @@ function EditProfileContent() {
           label="Email"
           placeholder="Enter your email"
           {...form.getInputProps("email")}
+        />
+        <TextInput
+          mt="md"
+          size="md"
+          label="Image URL"
+          placeholder="Enter your image URL"
+          {...form.getInputProps("image")}
         />
         <button className="mt-6 w-full bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-4 py-3 text-sm flex items-center justify-center rounded-xl text-white duration-100 ">
           Update

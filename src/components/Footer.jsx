@@ -14,22 +14,22 @@ function Footer() {
           </Link>
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-900 sm:mb-0 dark:text-gray-900">
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <a href="#"    className="text-[18px] hover:text-primaryColor transition-colors text-primaryColor">
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <a href="#"   className="text-[18px] hover:text-primaryColor transition-colors p-4 ">
                 Books
               </a>
             </li>
             <li>
-              <a href="#" className="hover:underline me-4 md:me-6">
+              <a href="#"  className="text-[18px] hover:text-primaryColor transition-colors p-4 ">
                 Login
               </a>
             </li>
           </ul>
-          <Link to="/Contact-us">
+          <Link to="/SignUp">
             <span className="hidden sm:flex h-[40px] items-center justify-center border border-solid border-primaryColor py-2 px-4 rounded-[8px] cursor-pointer bg-primaryColor text-white ease-in duration-300">
               <i className="ri-mail-send-line"></i>
               <span className="pl-2">Sign Up</span>

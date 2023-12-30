@@ -8,8 +8,13 @@ import Books from "./pages/Books";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import AddBook from "./pages/AddBooks";
-import EditProfile from "./pages/EditProfile";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
+import EditBooks from "./components/EditBooks";
+import BookInfo from "./pages/BookInfo";
+// import EditBooks from "./pages/EditBooks";
+
+
 
 function App() {
   return (
@@ -19,10 +24,14 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/Books" element={<Books />} />
+        <Route path="/Books/:id" element={<BookInfo />} />
         <Route path="/Login" element={<Login />} />        
         <Route path="/AddBook" element={<AddBook />} />
-        <Route path="/Editprofile" element={<EditProfile />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/profile/:name" element={<Profile />} />
+          <Route path="/profile" element={<EditProfile />} />
+          <Route path="/admin/Books/Edit/:book_id" element={<EditBooks />} />
+       
+
       </Routes>
       <Toaster position="top-right" reverseOrder={false} />
       <Footer />
