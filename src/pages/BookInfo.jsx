@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 // import Reviews from "./Review";
 // import Reviews from "./components/Reviews";
 import AddReview from "../pages/AddReview";
+import Reviews from "./Review";
 
 function BookInfo() {
 
@@ -44,16 +45,16 @@ useEffect(() => {
         {/* descriptions */}
         <div className="w-full md:w-1/2 md:ml-8 mt-8 ">
           {/* title */}
-          <h1 className="text-4xl font-bold text-left">{CurrentItem.title}</h1>
+          <h1 className="text-4xl font-bold text-left">{CurrentItem?.title}</h1>
        
           {/* desc */}
-          <p className="text-xl mt-5">Des: {CurrentItem.description}</p>
+          <p className="text-xl mt-5">Des: {CurrentItem?.description}</p>
              {/* author */}
-             <h3 className="text-2xl text-left mt-5">Auth: {CurrentItem.author}</h3>
+             <h3 className="text-2xl text-left mt-5">Auth: {CurrentItem?.author}</h3>
           {/* price */}
-          <p className="text-xl mt-5">$ {CurrentItem.price}</p>
+          <p className="text-xl mt-5">$ {CurrentItem?.price}</p>
            {/* year */}
-           <p className="text-xl mt-5">year: {CurrentItem.year}</p>
+           <p className="text-xl mt-5">year: {CurrentItem?.year}</p>
 
           {/* rating */}
           <div className="flex justify-start mt-4">
@@ -90,7 +91,7 @@ useEffect(() => {
             </TabPanel>
             <TabPanel className="space-y-8 mt-5">
                 {/* <Reviews /> */}
-                {/* <Reviews /> */}
+                <Reviews />
 
 
 

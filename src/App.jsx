@@ -12,6 +12,8 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import EditBooks from "./components/EditBooks";
 import BookInfo from "./pages/BookInfo";
+import Forget from "./pages/ForgetPass";
+import Reset from "./pages/Reset";
 // import EditBooks from "./pages/EditBooks";
 
 
@@ -30,6 +32,8 @@ function App() {
         <Route path="/profile/:name" element={<Profile />} />
           <Route path="/profile" element={<EditProfile />} />
           <Route path="/admin/Books/Edit/:book_id" element={<EditBooks />} />
+          <Route path="/forget-password" element={<Forget />} />
+        <Route path="/reset_password/:id/:token" element={<Reset/>}/>
        
 
       </Routes>

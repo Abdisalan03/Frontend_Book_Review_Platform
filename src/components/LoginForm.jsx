@@ -80,6 +80,15 @@ function LoginForm() {
           size="md"
           {...form.getInputProps("password")}
         />
+        <Text ta="left" mt="md">
+        
+        <Link
+          to="/forget-password"
+          className="text-primaryColor"
+        >
+           Forgot your password?
+        </Link>
+</Text>
         <button className="mt-6 w-full bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-4 py-3 text-sm flex items-center justify-center rounded-xl text-white duration-100 ">
           Login
         </button>

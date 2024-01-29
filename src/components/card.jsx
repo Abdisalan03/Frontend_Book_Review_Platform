@@ -101,7 +101,8 @@ function Card() {
                         <span className="text-[#222]">$ {book.price}</span>
                         <span className="text-[#222]">year: {book.year}</span>
                       </div>
-                      <div className="mt-3 pb-2 flex items-center justify-between">
+                      {user.role === "admin" && (
+                        <div className="mt-3 pb-2 flex items-center justify-between">
                         <FaTrash
                           onClick={() => handleDelate(book._id)}
                           className="text-[#FF6746] text-xl cursor-pointer"
@@ -110,6 +111,8 @@ function Card() {
                           <FaEdit className="text-xl text-[#00befe] cursor-pointer" />
                         </Link>
                       </div>
+                      )}
+                      
                     </div>
                   </div>
                 ))}
