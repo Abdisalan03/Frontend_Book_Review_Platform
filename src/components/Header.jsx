@@ -135,7 +135,7 @@ function Header() {
                     )}
                     {user.role === "user" && (
                       <>
-                        <Link
+                        {/* <Link
                           to="/user_activity"
                           onClick={() => setMenu(!menu)}
                         >
@@ -144,7 +144,7 @@ function Header() {
                           >
                             User activity
                           </Menu.Item>
-                        </Link>
+                        </Link> */}
                         <Link to="/Books" onClick={() => setMenu(!menu)}>
                           <Menu.Item leftSection={<BsHouses />}>
                             Your Books

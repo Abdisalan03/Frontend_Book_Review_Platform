@@ -24,6 +24,7 @@ const [CurrentItem, setCurrentItem] = useState({})
 
 useEffect(() => {
     const item = items.find((item) => item._id === id);
+
     setCurrentItem(item)
 
   }, [items, CurrentItem, id]);
@@ -91,7 +92,7 @@ useEffect(() => {
             </TabPanel>
             <TabPanel className="space-y-8 mt-5">
                 {/* <Reviews /> */}
-                <Reviews />
+                <Reviews  id={id}/>
 
 
 

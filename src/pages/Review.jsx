@@ -3,7 +3,7 @@ import Rating from 'react-rating';
 import { HiOutlineStar as StarEmptyIcon, HiStar as StarFullIcon } from 'react-icons/hi2';
 import { useGetReviewQuery } from '../Store/api/ReviewSlice';
 
-function Reviews() {
+function Reviews({id}) {
   const { data: reviews, error, isLoading } = useGetReviewQuery();
 
   if (isLoading) {
@@ -13,12 +13,12 @@ function Reviews() {
   if (error) {
     return <div className="text-center mt-4 text-red-500">Error: {error.message}</div>;
   }
-
+console.log("id: ", id)
   return (
     <div className="container mx-auto mt-8 p-4">
       <h1 className="text-3xl font-bold mb-4">Reviews</h1>
       <ul className="list-disc pl-4">
-        {reviews.map((review) => (
+        {reviews.filter(( review) => review.book._id === id).map((review) => (
           <li key={review.id} className="mb-4 flex flex-col md:flex-row md:items-start">
             {/* Avatar Image */}
             <img
