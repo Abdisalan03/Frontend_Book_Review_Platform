@@ -80,7 +80,7 @@ function Card() {
                 {filteredItems.map((book) => (
                   <div
                     key={book._id}
-                    className="flex flex-col gap-6  overflow-hidden w-[390px] bg-white shadow-lg border-2 hover:border-[#00befe] p-4 rounded-xl hover:scale-[0.98] transition-all"
+                    className="flex flex-col gap-6  overflow-hidden w-[340px] bg-white shadow-lg border-2 hover:border-[#00befe] p-4 rounded-xl hover:scale-[0.98] transition-all"
                   >
                   <Link to= {`/Books/${book._id}`}>  <img
                       src={book.image}

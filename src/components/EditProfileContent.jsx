@@ -18,20 +18,20 @@ function EditProfileContent() {
     initialValues: {
       name: user.name,
       email: user.email,
-      image: user.image
+      // image: user.image
     },
 
     validate: {
       name: (value) => !value.trim() && "Invalid name",
       email: (value) =>
         /^\S+@\S+$/.test(value) ? null : "Invalid email address",
-      image: (value) => {
-        // You can add custom validation for the image URL if needed
-        // For now, assuming any string is a valid URL
-        return /^(ftp|http|https):\/\/[^ "]+$/.test(value)
-          ? null
-          : "Invalid URL";
-      }
+      // image: (value) => {
+      //   // You can add custom validation for the image URL if needed
+      //   // For now, assuming any string is a valid URL
+      //   return /^(ftp|http|https):\/\/[^ "]+$/.test(value)
+      //     ? null
+      //     : "Invalid URL";
+      // }
     }
   });
 
@@ -78,13 +78,13 @@ function EditProfileContent() {
           placeholder="Enter your email"
           {...form.getInputProps("email")}
         />
-        <TextInput
+        {/* <TextInput
           mt="md"
           size="md"
           label="Image URL"
           placeholder="Enter your image URL"
           {...form.getInputProps("image")}
-        />
+        /> */}
         <button className="mt-6 w-full bg-primaryColor bg-opacity-90 hover:bg-opacity-100 px-4 py-3 text-sm flex items-center justify-center rounded-xl text-white duration-100 ">
           Update
         </button>
